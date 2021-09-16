@@ -1,5 +1,6 @@
 #include "MicroBit.h"
 
+ManagedString msg;
 MicroBit uBit;
 bool gameOver = false;
 bool atBottom = false;
@@ -23,7 +24,6 @@ void endGame()
     gameOver = true;
     uBit.display.clear();
     uBit.display.scroll("LOSE!");
-    uBit.serial.send("LOSE! ", ASYNC);
     gameOver = false;
 }
 // display platform thread
@@ -65,7 +65,8 @@ void displayBall()
             // check if we are at the bottom
             if (_by == 4)
             {
-                uBit.serial.send("Bottom Hit! ", ASYNC);
+                msg = 'Top Hit!';
+                uBit.serial.send(msg, ASYNC);
                 atBottom = true;
                 // check if platform is not where the ball is
                 if (!((_x == _bx) && (_y == _by)))
@@ -77,7 +78,6 @@ void displayBall()
             // check if we are at the top of the board
             if (_by == 0)
             {
-                uBit.serial.send("Top Hit! ", ASYNC);
                 // if so set atBottom to false to indicate we need to be falling down
                 atBottom = false;
                 _bx = microbit_random(5);
